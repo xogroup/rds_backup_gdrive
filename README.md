@@ -23,7 +23,7 @@ To encrypt the backup, we took the steps from (here)[https://www.imagescape.com/
 
     # Generate a public private key pair
     openssl req -x509 -nodes -days 1000000 -newkey rsa:4096 -keyout backup_key.pem\
-    -subj "/C=US/ST=Illinois/L=Chicago/O=IT/CN=www.example.com" \
+    -subj "/C=US/CN=www.theknot.com" \
     -out backup_key.pem.pub
 
     # Encrypt with public key  
