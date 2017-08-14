@@ -43,3 +43,5 @@ To encrypt the backup, we took the steps from (here)[https://www.imagescape.com/
 Storage was the biggest question so far. Something like Google Drive would be an easy option but might not be as secure. One option we explored was using (Rclone)[https://rclone.org/drive/] to sync to Google Drive:
 
     rclone copy dump.sql core_data_dump:data_dumps
+
+Another option was to use a XO owned drive/server. One that was suggested was  \prdisilon\SqlReplData however we were not yet able to get moving data to that drive to work as expected.
