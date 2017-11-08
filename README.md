@@ -58,23 +58,17 @@ $ docker run -d -e "RCLONE_REFRESH_TOKEN=<RCLONE_REFRESH_TOKEN>" \
               rds_backup_gdrive:latest
 ```
 
-### Encrypt the Backup
+### Decrypting the Backup
 
-To encrypt the backup, we took the steps from (here)[https://www.imagescape.com/blog/2015/12/18/encrypted-postgres-backups/]
+The private key `rds_backup_key.pem` can be found in Passwordstate.
 
-    # Generate a public private key pair
-    openssl req -x509 -nodes -days 1000000 -newkey rsa:4096 -keyout backup_key.pem\
-    -subj "/C=US/CN=www.theknot.com" \
-    -out backup_key.pem.pub
+```
+$ openssl smime -decrypt -in <db_backup_filename>.sql.bz2.ssl -binary \
+  -inform DEM -inkey rds_backup_key.pem -out <db_backup_filename>.sql.bz2
+```
 
-    # Encrypt with public key  
-    pg_dump my_database | bzip2 | openssl smime -encrypt -aes256 -binary \
-    -outform DEM -out my_database.sql.bz2.ssl backup_key.pem.pub
+### Unzipping Decrypted Backup
 
-    # Decrypt to a file using private key
-    openssl smime -decrypt -in my_database.sql.bz2.ssl -binary \
-    -inform DEM -inkey backup_key.pem -out my_database.sql.bz2
-
-    # Decrypt to stdout using private key
-    openssl smime -decrypt -in my_database.sql.bz2.ssl -binary \
-    -inform DEM -inkey backup_key.pem | bzcat
+```
+$ bzip2 -dk <db_backup_filename>.sql.bz2
+```
