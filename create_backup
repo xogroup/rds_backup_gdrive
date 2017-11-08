@@ -1,5 +1,4 @@
 * * * * * echo "Hello world" >> /var/log/cron.log 2>&1
-* * * * * /root/dummy_script.sh
-#* * * * * /root/pg_dump.sh >> /var/log/cron.log 2>&1
+* * * * * /root/pg_dump.sh >> /var/log/cron.log 2>&1
 
 # cron needs an empty line at the end, leave this here.
