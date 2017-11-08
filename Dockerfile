@@ -1,4 +1,4 @@
-FROM psql-rclone:latest
+FROM xogroup/postgresql-rclone:latest
 
 USER root
 
