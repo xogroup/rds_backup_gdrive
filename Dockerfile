@@ -1,4 +1,5 @@
 FROM xogroup/postgresql-rclone:latest
+LABEL maintainer="coreservices.group@xogrp.com"
 
 USER root
 
@@ -17,4 +18,4 @@ RUN apk update \
  && rm -rf /var/cache/apk/*
 
 ENTRYPOINT ["/root/entrypoint.sh"]
-CMD ["pg_dump.sh"]
+CMD ["/root/pg_dump.sh"]
