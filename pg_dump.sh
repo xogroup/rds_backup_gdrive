@@ -7,7 +7,7 @@ obsolete_filename=backup_$(date --date="1 day ago" +"%Y%m%d")
 
 pg_dump \
   --no-password | bzip2 | openssl smime -encrypt -aes256 -binary \
--outform DEM -out /root/$filename.sql.bz2.ssl /root/rds_backup_key.pem.pub
+-outform DEM -out /root/$filename.sql.bz2.ssl /etc/secret-volume/ssh-publickey
 
 rm /root/$filename
 rclone copy /root/$filename.sql.bz2.ssl remote:$PGDATABASE/
