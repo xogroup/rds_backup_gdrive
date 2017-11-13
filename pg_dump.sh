@@ -6,13 +6,14 @@ filename=backup_$(date +"%Y%m%d")
 obsolete_filename=backup_$(date --date="1 day ago" +"%Y%m%d")
 
 pg_dump \
-  --no-password \
-  -f /root/$filename
+  --no-password | bzip2 | openssl smime -encrypt -aes256 -binary \
+  -outform DEM -out /root/$filename.sql.bz2.ssl /etc/secret-volume/ssh-publickey
 
 echo "Backup finished."
 
 ls -la /root
-cat /root/.config/rclone/rclone.conf
+
+rclone lsl remote:/
 
 echo "Copying backup to GDrive."
 
