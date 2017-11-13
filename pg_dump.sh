@@ -1,16 +1,23 @@
 #!/usr/bin/env sh
 
 echo "Backup started."
+ls -la /etc/secret-volume/
+cat /etc/secret-volume/ssh-publickey
 
 filename=backup_$(date +"%Y%m%d")
 obsolete_filename=backup_$(date --date="1 day ago" +"%Y%m%d")
 
 pg_dump \
-  --no-password | bzip2 | openssl smime -encrypt -aes256 -binary \
--outform DEM -out /root/$filename.sql.bz2.ssl /etc/secret-volume/ssh-publickey
-
-rm /root/$filename
-rclone copy /root/$filename.sql.bz2.ssl remote:$PGDATABASE/
-rclone delete remote:$PGDATABASE/$obsolete_filename.sql.bz2.ssl
+  --no-password \
+  -f /root/$filename
 
 echo "Backup finished."
+
+ls -la /root
+
+echo "Copying backup to GDrive."
+
+rclone copy /root/$filename remote:$PGDATABASE/
+rm /root/$filename
+
+echo "Backup copied to GDrive."
