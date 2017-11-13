@@ -13,7 +13,7 @@ echo "Backup finished."
 
 ls -la /root
 
-rclone lsl remote:/ --config /root/.config/rclone/rclone.conf -v
+rclone lsl remote:/ --config /root/.config/rclone/rclone.conf -vv
 
 echo "Copying backup to GDrive."
 
