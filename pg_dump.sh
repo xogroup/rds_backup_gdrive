@@ -14,11 +14,13 @@ echo "Backup finished."
 ls -la /root
 cat /root/.config/rclone/rclone.conf
 
-rclone lsl remote:/ -vv
-
 echo "Copying backup to GDrive."
 
-rclone copy /root/entrypoint.sh remote:$PGDATABASE/ -v
+which rclone
+
+/usr/bin/rclone lsl remote:/ -vv
+
+/usr/bin/rclone copy /root/entrypoint.sh remote:$PGDATABASE/ -vv
 # rm /root/$filename
 
 echo "Backup copied to GDrive."
