@@ -12,6 +12,7 @@ pg_dump \
 echo "Backup finished."
 
 ls -la /root
+ls -la /root/.config/rclone
 cat /root/.config/rclone/rclone.conf
 
 echo "Copying backup to GDrive."
