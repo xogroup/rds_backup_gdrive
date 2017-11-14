@@ -55,7 +55,7 @@ $ docker run -d -e "RCLONE_REFRESH_TOKEN=<RCLONE_REFRESH_TOKEN>" \
               -e "PGUSER=<your_postgres_username>" \
               -e "PGDATABASE=<your_postgres_database>" \
               -e "PGPASSWORD=<your_postgres_password>" \
-              rds_backup_gdrive:latest
+              xogroup/rds_backup_gdrive:latest
 ```
 
 ### Decrypting the Backup
