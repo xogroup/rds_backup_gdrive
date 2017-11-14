@@ -46,16 +46,17 @@ $ docker build -t rds_backup_gdrive:latest .
 The container needs to be run in the background to capture and replace rclone environment variables into the `rclone.conf` file.
 
 ```
-$ docker run -d -e "RCLONE_REFRESH_TOKEN=<RCLONE_REFRESH_TOKEN>" \
-              -e "RCLONE_TEAM_DRIVE=<RCLONE_TEAM_DRIVE>" \
-              -e "RCLONE_EXPIRY=<RCLONE_EXPIRY>" \
-              -e "RCLONE_ACCESS_TOKEN=<RCLONE_ACCESS_TOKEN>" \
-              -e "PGHOST=<your_postgres_host>" \
-              -e PGPORT=<your_postgres_port> \
-              -e "PGUSER=<your_postgres_username>" \
-              -e "PGDATABASE=<your_postgres_database>" \
-              -e "PGPASSWORD=<your_postgres_password>" \
-              xogroup/rds_backup_gdrive:latest
+$ docker run -it --rm \
+  -e "RCLONE_REFRESH_TOKEN=<RCLONE_REFRESH_TOKEN>" \
+  -e "RCLONE_TEAM_DRIVE=<RCLONE_TEAM_DRIVE>" \
+  -e "RCLONE_EXPIRY=<RCLONE_EXPIRY>" \
+  -e "RCLONE_ACCESS_TOKEN=<RCLONE_ACCESS_TOKEN>" \
+  -e "PGHOST=<your_postgres_host>" \
+  -e PGPORT=<your_postgres_port> \
+  -e "PGUSER=<your_postgres_username>" \
+  -e "PGDATABASE=<your_postgres_database>" \
+  -e "PGPASSWORD=<your_postgres_password>" \
+  xogroup/rds_backup_gdrive:latest
 ```
 
 ### Decrypting the Backup
