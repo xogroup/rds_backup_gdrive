@@ -1,0 +1,68 @@
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: <name_of_cronjob_and_container>
+spec:
+  schedule: "* 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+          - name: secret-volume
+            secret:
+              secretName: rds-backup-publickey
+          containers:
+          - name: <name_of_cronjob_and_container>
+            image: xogroup/rds_backup_gdrive
+            env:
+              - name: RCLONE_REFRESH_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: rclone_refresh_token
+              - name: RCLONE_TEAM_DRIVE
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: rclone_team_drive
+              - name: RCLONE_EXPIRY
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: rclone_expiry
+              - name: RCLONE_ACCESS_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: rclone_access_token
+              - name: PGPORT
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: pgport
+              - name: PGHOST
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: pghost
+              - name: PGDATABASE
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: pgdatabase
+              - name: PGUSER
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: pguser
+              - name: PGPASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: <k8_db_backup_secret_name>
+                    key: pgpassword
+            volumeMounts:
+            - name: secret-volume
+              readOnly: false
+              mountPath: "/etc/secret-volume"
+          restartPolicy: OnFailure

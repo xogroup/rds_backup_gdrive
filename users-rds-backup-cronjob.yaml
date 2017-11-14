@@ -1,0 +1,68 @@
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: users-rds-backup
+spec:
+  schedule: "* 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+          - name: secret-volume
+            secret:
+              secretName: rds-backup-publickey
+          containers:
+          - name: users-rds-backup
+            image: xogroup/rds_backup_gdrive
+            env:
+              - name: RCLONE_REFRESH_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: rclone_refresh_token
+              - name: RCLONE_TEAM_DRIVE
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: rclone_team_drive
+              - name: RCLONE_EXPIRY
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: rclone_expiry
+              - name: RCLONE_ACCESS_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: rclone_access_token
+              - name: PGPORT
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: pgport
+              - name: PGHOST
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: pghost
+              - name: PGDATABASE
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: pgdatabase
+              - name: PGUSER
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: pguser
+              - name: PGPASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: users-backup-secrets
+                    key: pgpassword
+            volumeMounts:
+            - name: secret-volume
+              readOnly: false
+              mountPath: "/etc/secret-volume"
+          restartPolicy: OnFailure

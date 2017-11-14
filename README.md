@@ -1,6 +1,6 @@
 ## RDS Backup to Google Team Drive
 
-This repo contains the Docker image that will capture a RDS Postgres Database backup and upload it to a Google Team Drive.
+This repo contains the Docker image that will capture a RDS Postgres Database backup in production and upload it to a Google Team Drive.
 
 ### Installing and configuring [rclone](https://rclone.org/drive/)
 
@@ -58,6 +58,46 @@ $ docker run -it --rm \
   -e "PGPASSWORD=<your_postgres_password>" \
   xogroup/rds_backup_gdrive:latest
 ```
+
+### Adding a scheduled job on Kubernetes
+
+1. Create a yaml file with all of your secrets **base 64 encoded**.
+    - Create a copy of [secrets_template.yaml file](secrets_template.yaml)
+    - Replace `<k8_db_backup_secret_name>` with desired name for collection of secrets on k8, like `users-backup-secrets`
+    - Replace the values for each key under data with the base 64 encoded version of the value.
+      - E.g. If the value for `rclone_refresh_token` is `abcdefg`, the value would be `YWJjZGVmZw==`.
+      - To get the base 64 encoded version, run `echo -n "abcdefg" | base64`.
+2. Use that secrets file to create a new secret in Kubernetes in your namespace
+    - `kubectl create -f <name_of_secrets_file>.yaml --namespace <your_team_namespace>`
+    - You should see `secret "<k8_db_backup_secret_name>" created` in the console if it was created successfully
+3. Create a cronjob from `cronjob-template.yaml`
+    - Create a copy of [cronjob-template.yaml](cronjob-template.yaml)
+    - Edit `<name_of_cronjob_and_container>` on line 4 and line 16 to a name you would like for your cronjob and container
+    - Edit `spec.schedule: "* 3 * * *"` on line 6 to whenever you would like your job to be run, or leave the default that will run at 3 AM every day
+    - Replace all instances of `<k8_db_backup_secret_name>` with the secret created from step 2
+    - Run `kubectl create -f <name_of_cronjob_file>.yaml --namespace <your_team_namespace>` to create the cronjob
+    - See [users-rds-backup-cronjob.yaml](users-rds-backup-cronjob.yaml) for a working example
+
+
+### Getting logs from pod started by cronjob
+
+This command will watch for jobs that get spun up. It works most effectively when run just before your job is scheduled to kick off.
+```
+$ kubectl get jobs --watch
+```
+The output should look something like:
+```
+NAME                               DESIRED   SUCCESSFUL   AGE
+users-rds-backup-1510701770   1         0            0s
+```
+Take the name of the job and replace `<job_name>` in `pod` definition.
+E.g. `<job_name>` => `users-rds-backup-1510701770`
+```
+$ pod=$(kubectl get pods -a --selector=job-name=<job_name> --output=jsonpath={.items..metadata.name})
+$ kubectl describe pods/$pod
+$ kubectl logs $pod
+```
+You can also attach `-f` to `kubectl logs $pod` to watch the logs.
 
 ### Decrypting the Backup
 
