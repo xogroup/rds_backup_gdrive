@@ -6,9 +6,9 @@ This repo contains the Docker image that will capture a RDS Postgres Database ba
 
 ```
 $ cd ~/tmp
-$ wget -q https://downloads.rclone.org/rclone-v1.38-linux-arm64.zip
-$ unzip ~/tmp/rclone-$RCLONE_VERSION-linux-arm64.zip
-$ cp ~/tmp/rclone-v1.38-linux-arm64/rclone /usr/local/bin
+$ wget -q https://downloads.rclone.org/rclone-v1.38-linux-amd64.zip
+$ unzip ~/tmp/rclone-$RCLONE_VERSION-linux-amd64.zip
+$ cp ~/tmp/rclone-v1.38-linux-amd64/rclone /usr/local/bin
 $ rclone config
 ```
 
