@@ -78,6 +78,25 @@ $ docker run -it --rm \
     - Run `kubectl create -f <name_of_cronjob_file>.yaml --namespace <your_team_namespace>` to create the cronjob
     - See [users-rds-backup-cronjob.yaml](users-rds-backup-cronjob.yaml) for a working example
 
+### Getting logs from pod started by cronjob
+
+This command will watch for jobs that get spun up. It works most effectively when run just before your job is scheduled to kick off.
+```
+$ kubectl get jobs --watch
+```
+The output should look something like:
+```
+NAME                               DESIRED   SUCCESSFUL   AGE
+users-rds-backup-1510701770   1         0            0s
+```
+Take the name of the job and replace `<job_name>` in `pod` definition.
+E.g. `<job_name>` => `users-rds-backup-1510701770`
+```
+$ pod=$(kubectl get pods -a --selector=job-name=<job_name> --output=jsonpath={.items..metadata.name})
+$ kubectl describe pods/$pod
+$ kubectl logs $pod
+```
+You can also attach `-f` to `kubectl logs $pod` to watch the logs.
 
 ### Getting logs from pod started by cronjob
 
